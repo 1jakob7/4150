@@ -90,8 +90,8 @@ int countDifferentPrototypes(std::vector<std::vector<int>> &prototypes, int numP
   
   int numDiff = 0;
   bool hasMatch[numProto];
-  for(bool val : hasMatch) {
-    val = false;
+  for (int i = 0; i < numProto; i++) {
+    hasMatch[i] = false;
   }
   // tests trees against each other, and skips trees that are already matched with a previous
   for (int p = 0; p < numProto - 1; p++) {
@@ -113,7 +113,7 @@ int countDifferentPrototypes(std::vector<std::vector<int>> &prototypes, int numP
   return numDiff;
 }
 
-int main (int argc, char *argv[]) {
+int main (int argc, char* argv[]) {
   std::string data;
   int numProto;
   int numLayers;
@@ -142,4 +142,6 @@ int main (int argc, char *argv[]) {
   }
 
   std::cout << countDifferentPrototypes(prototypes, numProto, numLayers) << std::endl;
+
+  return 0;
 }
