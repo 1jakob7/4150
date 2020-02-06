@@ -3,7 +3,10 @@
 
 class Sink
 {
+ private:
 
+ public:
+  
 };
 
 #endif
