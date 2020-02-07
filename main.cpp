@@ -25,10 +25,6 @@ int main() {
     tolls.insert(std::pair<std::string, int>(c, t));
   }
 
-  // for (std::map<std::string, int>::iterator p = tolls.begin(); p != tolls.end(); ++p) {
-  //   std::cout << p->first << " " << p->second << std::endl;
-  // }
-
   // create an adjacency list that maps cities one can travel to from a particlar city
   std::map<std::string, std::list<std::string>> connections;
   std::map<std::string, std::list<std::string>>::iterator it;
@@ -47,14 +43,6 @@ int main() {
     }
     connections[c1].push_back(c2);
   }
-
-  // for (std::map<std::string, std::list<std::string>>::iterator p = connections.begin(); p != connections.end(); ++p) {
-  //   std::cout << p->first;
-  //   for (std::list<std::string>::iterator itr = p->second.begin(); itr != p->second.end(); ++itr) {
-  //     std::cout << " " <<  *itr;
-  //   }
-  //   std::cout << std::endl;
-  // }
   
   // create a 2d array of trips from one city to another
   std::vector<std::vector<std::string>> trips;
@@ -69,7 +57,19 @@ int main() {
     trips.push_back({c1, c2});
   }
 
-  //  std::cout << trips[0][1];
-  
   return 0;
 }
+
+  // for (std::map<std::string, std::list<std::string>>::iterator p = connections.begin(); p != connections.end(); ++p) {
+  //   std::cout << p->first;
+  //   for (std::list<std::string>::iterator itr = p->second.begin(); itr != p->second.end(); ++itr) {
+  //     std::cout << " " <<  *itr;
+  //   }
+  //   std::cout << std::endl;
+  // }
+
+  // for (std::map<std::string, int>::iterator p = tolls.begin(); p != tolls.end(); ++p) {
+  //   std::cout << p->first << " " << p->second << std::endl;
+  // }
+
+  //  std::cout << trips[0][1];
