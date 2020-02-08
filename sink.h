@@ -13,6 +13,7 @@ class Sink
   std::vector<std::vector<std::string>> trips;
   
   int clock;
+  int maxCost;
   std::map<std::string, bool> visited;
   std::vector<std::string> post;
   
@@ -23,6 +24,7 @@ class Sink
   void explore(std::string city);
   void postvisit(std::string city);
   std::vector<std::string> findMinCosts();
+  std::string findLowestToll(std::list<std::string> neighbors);
 };
 
 #endif
