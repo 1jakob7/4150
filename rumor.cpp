@@ -20,6 +20,7 @@ int main() {
     ss1 >> name;
     names.push_back(name);
   }
+  
   std::getline(std::cin, data);
   std::stringstream ss2(data);
   ss2 >> f;
@@ -36,11 +37,27 @@ int main() {
     else {
       friends.at(friend1).push_back(friend2);
     }
-    //if()
+    if (friends.count(friend2) < 1) {
+      friends.insert(std::pair<std::string, std::vector<std::string>>(friend2, {friend1}));
+    }
+    else {
+      friends.at(friend2).push_back(friend1);
+    }
   }
-  
 
-  //std::cout << names.at(1) << std::endl;
+  std::getline(std::cin, data);
+  std::stringstream ss3(data);
+  ss3 >> r;
+  std::string student;
+  std::vector<std::string> rumors;
+  for (int i = 0; i < r; i++) {
+    std::getline(std::cin, data);
+    std::stringstream ss3(data);
+    ss3 >> student;
+    rumors.push_back(student);
+  }
+
+  ///
   
   return 0;
 }
