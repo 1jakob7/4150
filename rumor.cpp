@@ -36,8 +36,8 @@ std::vector<std::string> generateReportBFS(std::vector<std::string> names, std::
     }
   }
   
-  std::vector<std::string> nCopy = names;
-  std::sort(nCopy.begin(), nCopy.end());
+  std::vector<std::string> nCopy(names);
+  std::sort(std::begin(nCopy), std::end(nCopy));
   for (std::string n : nCopy) {
     if (dist.at(n) == -1) {
       report.push_back(n);
@@ -89,7 +89,7 @@ int main() {
   // get friend groups in alphabetical order
   for (std::string s : names) {
     if (friends.count(s) > 0) {
-      std::sort(friends.at(s).begin(), friends.at(s).end());
+      std::sort(std::begin(friends.at(s)), std::end(friends.at(s)));
     }
   }
 
