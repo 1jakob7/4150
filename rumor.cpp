@@ -5,23 +5,20 @@
 #include <queue>
 #include <map>
 
+/// Generates a "report" of students in the order they recieved a rumor, starting from a given student.
 std::vector<std::string> generateReportBFS(std::vector<std::string> names, std::map<std::string, std::vector<std::string>> friends, std::string rumorStarter) {
   std::map<std::string, int> dist;
-  std::map<std::string, std::string> prev;
+  std::map<int, std::vector<std::string>> fDepths;
   for (std::string n : names) {
     dist.insert(std::pair<std::string, int>(n, -1)); // -1 represents infinity
-    prev.insert(std::pair<std::string, std::string>(n, "")); // currently, no previous rumor teller
   }
   dist.at(rumorStarter) = 0; // the rumor starter
   std::vector<std::string> report;
-
-  if (friends.count(rumorStarter) < 1) {
-    report.push_back(rumorStarter);
-  }
-  else {
+  report.push_back(rumorStarter);
+  
+  if (friends.count(rumorStarter) > 0) {
     std::queue<std::string> q;
     q.push(rumorStarter);
-
     while (!q.empty()) {
       std::string curr = q.front();
       q.pop();
@@ -29,13 +26,28 @@ std::vector<std::string> generateReportBFS(std::vector<std::string> names, std::
 	if (dist.at(f) == -1) {
 	  q.push(f);
 	  dist.at(f) = dist.at(curr) + 1;
-	  prev.at(f) = curr;
+	  if (fDepths.count(dist.at(f)) < 1) {
+	    fDepths.insert(std::pair<int, std::vector<std::string>>(dist.at(f), {f}));
+	  }
+	  else {
+	    fDepths.at(dist.at(f)).push_back(f);
+	  }
 	}
       }
-      report.push_back(curr);
     }
   }
-  
+
+  // add every level of "friend tree" to the report, alphabetically sorted
+  int depthCount = 1;
+  while (fDepths.count(depthCount) > 0) {
+    std::sort(std::begin(fDepths.at(depthCount)), std::end(fDepths.at(depthCount)));
+    for (std::string s : fDepths.at(depthCount)) {
+      report.push_back(s);
+    }
+    depthCount++;
+  }
+
+  // add remaining students with no friend connection to the rumor-starter
   std::vector<std::string> nCopy(names);
   std::sort(std::begin(nCopy), std::end(nCopy));
   for (std::string n : nCopy) {
@@ -51,6 +63,7 @@ int main() {
   int n, f, r;
   std::string data;
 
+  // get all students
   std::getline(std::cin, data);
   std::stringstream ss1(data);
   ss1 >> n;
@@ -62,7 +75,8 @@ int main() {
     ss1 >> name;
     names.push_back(name);
   }
-  
+
+  // get all friendships
   std::getline(std::cin, data);
   std::stringstream ss2(data);
   ss2 >> f;
@@ -93,6 +107,7 @@ int main() {
     }
   }
 
+  // get all rumor-starters
   std::getline(std::cin, data);
   std::stringstream ss3(data);
   ss3 >> r;
