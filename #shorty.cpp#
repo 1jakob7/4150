@@ -31,7 +31,7 @@ double getHighestFrac(std::map<int, std::vector<double>> corridors, int numInter
       hasPopped[curr.second] = true;
       std::vector<double> connections = corridors.at(curr.second);
       for (unsigned int i = 0; i < connections.size(); i+=2) { // new corridor every 2 elements
-        if (dist[connections[i]] > dist[curr.second] * connections[i+1]) { // comapring against fraction of current distance
+        if (dist[connections[i]] > dist[curr.second] * connections[i+1]) { // comparing against fraction of current distance
 	  dist[connections[i]] = dist[curr.second] * connections[i+1];
 	  prev[connections[i]] = curr.second;
 	  pq.push(std::make_pair(connections[i], dist[connections[i]]));
