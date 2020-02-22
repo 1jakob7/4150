@@ -1,15 +1,19 @@
+#include <unordered_map>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
 #include <vector>
 #include <queue>
-#include <map>
+
+#include <fstream>
+#include <stdlib.h>
+#include <time.h>
 
 typedef std::pair<double, int> corr; // used for priority queue value pairing
 
 /// Uses a version of Dijkstra's algorithm to find the path of "least resistance". The starting value
 /// of '1.0' should be as high as possible after running thru the maze.
-double getHighestFrac(std::map<int, std::vector<double>> corridors, int numIntersects) {
+double getHighestFrac(std::unordered_map<int, std::vector<double>> corridors, int numIntersects) {
   std::vector<double> dist(numIntersects);
   std::vector<int> prev(numIntersects);
   
@@ -48,14 +52,14 @@ int main() {
   std::string data;
   int n, m, x, y;
   double f;
-
+  
   std::getline(std::cin, data);
   std::stringstream ss(data);
   ss >> n;
   ss >> m;
-  
-  while (n != 0 && m != 0) {  
-    std::map<int, std::vector<double>> corridors;
+
+  while (n != 0 && m != 0) {
+    std::unordered_map<int, std::vector<double>> corridors;
     for (int i = 0; i < m; i++) {
       std::getline(std::cin, data);
       std::stringstream ss(data);
