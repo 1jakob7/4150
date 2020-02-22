@@ -5,10 +5,6 @@
 #include <vector>
 #include <queue>
 
-#include <fstream>
-#include <stdlib.h>
-#include <time.h>
-
 typedef std::pair<double, int> corr; // used for priority queue value pairing
 
 /// Uses a version of Dijkstra's algorithm to find the path of "least resistance". The starting value
@@ -18,7 +14,7 @@ double getHighestFrac(std::unordered_map<int, std::vector<double>> corridors, in
   std::vector<int> prev(numIntersects);
   
   for (std::pair<int, std::vector<double>> ele : corridors) {
-    dist[ele.first] = -1; ///
+    dist[ele.first] = -1.0;
     prev[ele.first] = -1;
   }
   dist[0] = 1.0; // always start at intersection 0
@@ -70,14 +66,14 @@ int main() {
         corridors.insert(std::pair<int, std::vector<double>>(x, {(double)y, f}));
       }
       else {
-        corridors.at(x).push_back(y);
+        corridors.at(x).push_back((double)y);
         corridors.at(x).push_back(f);
       }
       if (corridors.count(y) < 1) {
 	corridors.insert(std::pair<int, std::vector<double>>(y, {(double)x, f}));
       }
       else {
-	corridors.at(y).push_back(x);
+	corridors.at(y).push_back((double)x);
 	corridors.at(y).push_back(f);
       }
     }
