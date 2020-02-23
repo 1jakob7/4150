@@ -9,7 +9,7 @@ typedef std::pair<double, int> corr; // used for priority queue value pairing
 
 /// Uses a version of Dijkstra's algorithm to find the path of "least resistance". The starting value
 /// of '1.0' should be as high as possible after running thru the maze.
-double getHighestFrac(std::unordered_map<int, std::vector<double>> corridors, int numIntersects) {
+double getHighestFrac(const std::unordered_map<int, std::vector<double>>& corridors, int numIntersects) {
   std::vector<double> dist(numIntersects);
   std::vector<int> prev(numIntersects);
   
@@ -18,11 +18,11 @@ double getHighestFrac(std::unordered_map<int, std::vector<double>> corridors, in
     prev[ele.first] = -1;
   }
   dist[0] = 1.0; // always start at intersection 0
+  std::priority_queue<corr> pq;
+  pq.push(std::make_pair(dist[0], 0));
 
   std::vector<bool> hasPopped(numIntersects); // used due to linear-time update operation for pq, and instead we include duplicates on the pq
-  std::priority_queue<corr> pq;
   for (unsigned int i = 0; i < dist.size(); i++) {
-    pq.push(std::make_pair(dist[i], i));
     hasPopped[i] = false;
   }
 
@@ -36,7 +36,7 @@ double getHighestFrac(std::unordered_map<int, std::vector<double>> corridors, in
         if (dist[connections[i]] < dist[curr.second] * connections[i+1]) { // comparing against fraction of current distance
 	  dist[connections[i]] = dist[curr.second] * connections[i+1];
 	  prev[connections[i]] = curr.second;
-	  pq.push(std::make_pair(connections[i], dist[connections[i]]));
+	  pq.push(std::make_pair(dist[connections[i]], connections[i]));
         }
       }
     }
