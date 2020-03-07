@@ -2,13 +2,23 @@
 #include <sstream>
 #include <vector>
 
+long long int mod(long long int a, long long int b) {
+  long long int m = a % b;
+  if (m < 0) {
+    return m + b;
+  }
+  else {
+    return m;
+  }
+}
+
 /// Euclid's algorithm. Returns greatest common divisor of 'a' and 'b'.
 long long int gcd(long long int a, long long int b) {
   if (b == 0) {
     return a;
   }
   else {
-    return gcd(b, a % b);
+    return gcd(b, mod(a, b));
   }
 }
 
@@ -20,10 +30,10 @@ long long int modexp(long long int x, long long int y, long long int N) {
   else {
     long long int z = modexp(x, y/2, N);
     if (y % 2 == 0) {
-      return (z*z) % N;
+      return mod((z*z), N);
     }
     else {
-      return (x*(z*z)) % N;
+      return mod(mod(x, N)*mod(z*z, N), N);
     }
   }
 }
@@ -47,13 +57,7 @@ std::vector<long long int> ee(long long int a, long long int b) {
 long long int inverse(long long int a, long long int N) {
   std::vector<long long int> v = ee(a, N);
   if (v.at(2) == 1) {
-    long long int m = v.at(0) % N;
-    if (m < 0) {
-      return m + N;
-    }
-    else {
-      return m;
-    }
+    return mod(v.at(0), N);
   }
   else {
     return -1;
