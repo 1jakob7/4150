@@ -2,70 +2,69 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
 
-int dynamicMaxGallery(std::vector<std::vector<int>>& g, int k, int row, int uncloseable) {
+int hash(int row, int k, int uncloseable) {
+  return (row * 1000000) + (k * 10000) + (uncloseable * 100);
+}
 
-  if ((unsigned int)row == g.size() - 1) { // the final row in the gallery
-    if (k == 1) {
-      if (uncloseable == 0) {
-	return g[row][0];
-      }
-      if (uncloseable == 1) {
-	return g[row][1];
-      }
-      else {
-	return std::max(g[row][0], g[row][1]);
-      }
-    }
-    else {
-      return g[row][0] + g[row][1];
-    }
-  }
-  
-  if (k == 0) { // the rest of the rooms can be left open
-    return g[row][0] + g[row][1] + dynamicMaxGallery(g, k, row+1, -1);
+/// Returns the most $$$ that can be made through the optimal choice of k rooms to close in a gallery.
+int dynamicMaxGallery(const std::vector<std::vector<int>>& g, int k, int row, int uncloseable, std::unordered_map<int, int>& cache) {
+  if (row > (int)g.size() - 1) {
+    return 0;
   }
 
-  int max0 = 0;
-  int max1 = 0;
-  int maxn = 0;
+  if (cache.count(hash(row, k, uncloseable)) > 0) {
+    return cache.at(hash(row, k, uncloseable));
+  }
   
-  if ((unsigned int)k == g.size() - row) { // one room has to be closed
+  int absMax = 0;
+
+  // k = g.size() - row
+  if (k == (int)g.size() - row) {  
     if (uncloseable == 0) {
-      max0 = g[row][0] + dynamicMaxGallery(g, k-1, row+1, 0);
+      absMax = g[row][0] + dynamicMaxGallery(g, k-1, row+1, 0, cache);
     }
     else if (uncloseable == 1) {
-      max1 = g[row][1] + dynamicMaxGallery(g, k-1, row+1, 1);
+      absMax = g[row][1] + dynamicMaxGallery(g, k-1, row+1, 1, cache);
     }
     else {
-      max0 = g[row][0] + dynamicMaxGallery(g, k-1, row+1, 0);
-      max1 = g[row][1] + dynamicMaxGallery(g, k-1, row+1, 1);
+      absMax = std::max(g[row][0] + dynamicMaxGallery(g, k-1, row+1, 0, cache),
+			g[row][1] + dynamicMaxGallery(g, k-1, row+1, 1, cache));
+    }	   
+  }
+  // 0 < k < g.size() - row
+  else if (0 < k && k < (int)g.size() - row) {    
+    if (uncloseable == 0) {
+      absMax = std::max(g[row][0] + dynamicMaxGallery(g, k-1, row+1, 0, cache),
+			g[row][0] + g[row][1] + dynamicMaxGallery(g, k, row+1, -1, cache));
+    }
+    else if (uncloseable == 1) {
+      absMax = std::max(g[row][1] + dynamicMaxGallery(g, k-1, row+1, 1, cache),
+			g[row][0] + g[row][1] + dynamicMaxGallery(g, k, row+1, -1, cache));
+    }
+    else {
+      absMax = std::max(g[row][0] + dynamicMaxGallery(g, k-1, row+1, 0, cache),
+			g[row][1] + dynamicMaxGallery(g, k-1, row+1, 1, cache));
+      absMax = std::max(absMax, g[row][0] + g[row][1] + dynamicMaxGallery(g, k, row+1, -1, cache)); 
     }
   }
-  else if (uncloseable == -1) { // either room may be closed
-    max0 = g[row][0] + dynamicMaxGallery(g, k-1, row+1, 0);
-    max1 = g[row][1] + dynamicMaxGallery(g, k-1, row+1, 1);
-    maxn = g[row][0] + g[row][1] + dynamicMaxGallery(g, k, row+1, -1);
-  }
-  else if (uncloseable == 0) { // row 0's room must stay open
-    max0 = g[row][0] + dynamicMaxGallery(g, k-1, row+1, 0);
-    maxn = g[row][0] + g[row][1] + dynamicMaxGallery(g, k, row+1, -1);
-  }
-  else { // row 1's room must stay open
-    max1 = g[row][1] + dynamicMaxGallery(g, k-1, row+1, 1);
-    maxn = g[row][0] + g[row][1] + dynamicMaxGallery(g, k, row+1, -1);
+  else {
+    for (int i = row; i < g.size(); i++) {
+      absMax = absMax + g[i][0] + g[i][1];
+    }
+    return absMax;
   }
 
-  int absMax;
-  absMax = std::max(max0, max1);
-  absMax = std::max(absMax, maxn);
-
+  cache.insert(std::pair<int, int>(hash(row, k, uncloseable), absMax));
+  
   return absMax;
 }
 
-int dynamicMaxGallery(std::vector<std::vector<int>>& g, int k) {
-
-  return dynamicMaxGallery(g, k, 0, -1);
+int dynamicMaxGallery(const std::vector<std::vector<int>>& g, int k) {
+  std::unordered_map<int, int> cache;
+  
+  return dynamicMaxGallery(g, k, 0, -1, cache);
 }
 
 int main() {
