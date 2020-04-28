@@ -4,9 +4,10 @@
 #include <math.h>
 
 /// Greedy Alg.
-bool validSeparation(int minSeparation, int numShells, const std::vector<int>& distances) {
+int maxSeparation(int minSeparation, int numShells, const std::vector<int>& distances) {
   int shellCount = 1;
   int combinedSeparation = 0;
+  
   for (int i = 0; i < (int)distances.size(); i++) {
     combinedSeparation += distances[i];
     if (combinedSeparation >= minSeparation) {
@@ -15,17 +16,10 @@ bool validSeparation(int minSeparation, int numShells, const std::vector<int>& d
     }
   }
 
-  return shellCount >= numShells;
-}
-
-/// Driver. Increase distance by 1 and try until it fails.
-int maxSeparation(int numShells, const std::vector<int>& distances) {
-  int currSeparation = 1;
-  while (validSeparation(currSeparation, numShells, distances)) {
-    currSeparation++;
+  if (shellCount >= numShells) {
+    return maxSeparation(minSeparation + 1, numShells, distances);
   }
-  
-  return currSeparation-1;
+  return minSeparation - 1;
 }
 
 int main() {
@@ -44,14 +38,14 @@ int main() {
     ss >> d;
     distances.push_back(d);
   }
-
+  
   while (std::getline(std::cin, data)) {
     if (data.empty()) break;
     ss.str(""); ss.clear();
     ss << data;
     ss >> d;
-    std::cout << maxSeparation(d, distances) << std::endl;
+    std::cout << maxSeparation(1, d, distances) << std::endl;
   }
-
+  
   return 0;
 }
