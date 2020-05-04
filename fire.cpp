@@ -1,14 +1,9 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <math.h>
+#include <algorithm>
 
-#include <iostream>
-#include <sstream>
-#include <vector>
-#include <math.h>
-
-/// Greedy Alg.
+/// Greedy Alg. Decision.
 bool validSeparation(int minSeparation, int numShells, const std::vector<int>& distances) {
   int shellCount = 1;
   int combinedSeparation = 0;
@@ -19,19 +14,40 @@ bool validSeparation(int minSeparation, int numShells, const std::vector<int>& d
       combinedSeparation = 0;
     }
   }
-
   return shellCount >= numShells;
 }
 
-/// Driver. Increase distance by 1 and try until it fails.
-int maxSeparation(int numShells, const std::vector<int>& distances) {
-  int currSeparation = 1;
-  while (validSeparation(currSeparation, numShells, distances)) {
-    currSeparation++;
+/// Search.
+void search(int& bsf, int& minSep, int& nextIndex, int numShells, const std::vector<int>& distances) {  
+  while (minSep <= bsf && nextIndex >= 0) {
+    minSep += distances[nextIndex];
+    nextIndex--;
   }
-  
-  return currSeparation-1;
+  if (minSep > bsf) {
+    if (validSeparation(minSep, numShells, distances)) {
+      bsf = minSep;
+      search(bsf, minSep, nextIndex, numShells, distances);
+    }
+  }
 }
+
+/// Optimization.
+int maxSeparation(int numShells, std::vector<int> distances) {
+  int bsf = 1;
+  int minSep;
+  int maxIndex;
+  while (numShells != 1 && !distances.empty()) {
+    maxIndex = distances.size()-1;
+    minSep = distances[maxIndex];
+    int nextIndex = maxIndex - 1;
+    search(bsf, minSep, nextIndex, numShells, distances);
+    for (int i = maxIndex; i > nextIndex; i--) {
+      distances.pop_back();
+    }
+    numShells--;
+  }
+  return bsf;
+}  
 
 int main() {
   std::string data;
@@ -50,8 +66,8 @@ int main() {
     distances.push_back(d);
   }
 
-  while (std::getline(std::cin, data)) {
-    if (data.empty()) break;
+  for (int i = 0; i < k; i++) {
+    std::getline(std::cin, data);
     ss.str(""); ss.clear();
     ss << data;
     ss >> d;
