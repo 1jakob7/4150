@@ -41,13 +41,19 @@ int maxSeparation(int numShells, std::vector<int> distances) {
     minSep = distances[maxIndex];
     int nextIndex = maxIndex - 1;
     search(bsf, minSep, nextIndex, numShells, distances);
+    if (validSeparation(bsf + 1, numShells, distances)) {
+      bsf++;
+    }
+    else {
+      break;
+    }
     for (int i = maxIndex; i > nextIndex; i--) {
       distances.pop_back();
     }
     numShells--;
   }
   return bsf;
-}  
+}   
 
 int main() {
   std::string data;
